@@ -9,8 +9,16 @@ function getTotal($arr) {
     //start edits
     //note: use the $arr variable, don't directly touch $a1-$a4
     //TODO do adding here
+
+    //jd755 9-19-24
+    foreach($arr as $x)
+    {
+        $total += $x; 
+    }
     //TODO do rounding stuff here (round to two decimals i.e., 0.10, 0.01, 0.00)
-    
+    $total = $total*100;
+    round($total);
+    $total = $total/100;
     //end edits
     echo "The total is $total";
 }
