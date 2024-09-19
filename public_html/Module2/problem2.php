@@ -17,7 +17,7 @@ function getTotal($arr) {
     }
     //TODO do rounding stuff here (round to two decimals i.e., 0.10, 0.01, 0.00)
     $total = $total*100;
-    round($total);
+    $total = round($total);
     $total = $total/100;
     //end edits
     echo "The total is $total";
