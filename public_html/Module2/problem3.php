@@ -11,7 +11,25 @@ function bePositive($arr) {
     //start edits
     //note: use the $arr variable, don't directly touch $a1-$a4
     //TODO Take each value of the $arr, convert it to positive, and set it to the same index in the $output array but with the original data type (i.e., if the source was a string the output slot value should be a string)
-    
+    for($i = 0; $i < count($arr); $i++)
+    {
+        $temp = $arr[$i];
+
+        if($temp < 0)
+        {
+            if(is_string($temp))
+            {
+                $temp *= -1;
+                $temp = $temp . "";
+            }
+            else
+            {
+                $temp *= -1;
+            }
+        }
+
+        $arr[$i] = $temp;
+    }
     //end edits
     
     //displays the output along with their types
