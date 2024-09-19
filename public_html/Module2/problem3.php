@@ -28,7 +28,7 @@ function bePositive($arr) {
             }
         }
 
-        $arr[$i] = $temp;
+        $output[$i] = $temp;
     }
     //end edits
     
