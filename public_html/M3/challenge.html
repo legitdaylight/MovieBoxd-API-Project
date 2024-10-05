@@ -8,6 +8,7 @@
         window.addEventListener("load", () => {
             console.log("loaded via javascript");
             //TODO: add any extra onload processing you may need here (hint: you'll likely want to start here for the JS challenge)
+            /*jd755 9/26/24 script to change h1 and title with click*/
             const linkArr = document.getElementsByTagName("a")
 
             for(var i = 0; i < linkArr.length; i++)
@@ -29,19 +30,24 @@
     </script>
     <style>
         /* TODO: make style edits here */
+        /*jd755 9/26/24 changes background of nav*/
         nav {
             background-color:burlywood;
         }
+        /*jd755 9/26/24 sets nav horizontal*/
         nav > ul li{
             display: inline;
         }
+        /*jd755 9/26/24 sets link color to black when hovered*/
         nav > ul li a:hover{
             color:black;
         }
+        /*jd755 9/26/24 removes markers from nav*/
         nav > ul li:before{
             content: none;
         }
 
+        /*jd755 9/26/24*/
         ul{
             list-style-type: none;
         }
@@ -49,11 +55,12 @@
             content: '✓';
         }
 
+        /*jd755 9/26/24 capitalized h1 and a*/
         h1,a {
             text-transform: capitalize;
         }
 
-        /*Personal changes*/
+        /*jd755 9/26/24 Personal changes*/
         h3 + ul{
             background-color: blueviolet;
             border: dotted;
