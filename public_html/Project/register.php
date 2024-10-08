@@ -67,9 +67,21 @@ require(__DIR__."/../../lib/functions.php");
         $hasError = true;
     }
     
-    if (!$hasError) {
-        echo "Welcome, $email";
+    if (!$hasError){
+        // TODO 4: Hash password before storing
+        $hashed_password = password_hash($password, PASSWORD_BCRYPT);
+        $db = getDB(); // available due to the `require()` of `functions.php`
+        // Code for inserting user data into the database
+        $stmt = $db->prepare("INSERT INTO Users (email, password) VALUES (:email, :password)");
+        try{
+            $stmt->execute([':email' => $email, ':password' => $hashed_password]);
+            echo "Successfully registered!";
+        }
+        catch(Exception $e){
+            echo "There was an error registering<br>";
+            echo "<pre>" . var_export($e, true) . "</pre>";
+        }
     }
 
-    }
+}
 ?>
