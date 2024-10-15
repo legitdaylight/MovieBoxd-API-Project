@@ -33,12 +33,17 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
         $hasError = true;
     }
     //sanitize
-    $email = filter_var($email, FILTER_SANITIZE_EMAIL);
+    //$email = filter_var($email, FILTER_SANITIZE_EMAIL);
+    $email = sanitize_email($email);
     //validate
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    if(!is_valid_email($email)){
+        echo "Invalid email address";
+
+    }
+    /*if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         echo "Invalid email address";
         $hasError = true;
-    }
+    }*/
     if (empty($password)) {
         echo "password must not be empty";
         $hasError = true;
@@ -59,7 +64,7 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
                     $hash = $user["password"];
                     unset($user["password"]);
                     if (password_verify($password, $hash)) {
-                        echo "Welcome $email";
+                        //echo "Welcome $email";
                         $_SESSION["user"] = $user;
                         die(header("Location: home.php"));
                     } else {
@@ -70,9 +75,8 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
                 }
             }
         } catch (Exception $e) {
-            echo "An error occurred: " . $e->getMessage();
+            echo "<pre>" . var_export($e, true) . "</pre>";
         }
-
     }
 }
 ?>
