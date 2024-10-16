@@ -29,15 +29,16 @@ function processCars($cars) {
     $processedCars = []; // result array
     $classic_age = 25; // don't change this value
     // Start edits
-    $subArrNum = 0;
-    $currentYear = 2024;
+    // jd755 10/16/24
+    $subArrNum = 0; // interator for $processedCars sub array
+    $currentYear = 2024; // set $currentYear to the current year
 
    foreach ($cars as $subCar)
    {
-        $processedCars[$subArrNum] = $subCar;
-        $carAge = $currentYear - $subCar['year'];
-        $processedCars[$subArrNum]['age'] = $carAge;
-        if($carAge >= $classic_age)
+        $processedCars[$subArrNum] = $subCar; // adds the entire subarray to $processed car
+        $carAge = $currentYear - $subCar['year']; // calculates the cars age
+        $processedCars[$subArrNum]['age'] = $carAge; // adds car age to $processedCars
+        if($carAge >= $classic_age) // if statement to check if the car is a classic 
         {
             $processedCars[$subArrNum]['isClassic'] = true;
         }
