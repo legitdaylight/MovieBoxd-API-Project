@@ -31,7 +31,7 @@ function processCars($cars) {
     // Start edits
     // jd755 10/16/24
     $subArrNum = 0; // interator for $processedCars sub array
-    $currentYear = 2024; // set $currentYear to the current year
+    $currentYear = date('Y'); // set $currentYear to the current year
 
    foreach ($cars as $subCar)
    {
