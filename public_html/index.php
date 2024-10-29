@@ -1,2 +1,3 @@
-<?php echo "Welcome to Jeremy's IT202 site";
-// replace {your name} with your name
+<?php
+require(__DIR__ . "/../../lib/functions.php");
+die(header("Location: $BASE_PATH/login.php"));
