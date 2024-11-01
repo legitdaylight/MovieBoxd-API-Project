@@ -16,10 +16,51 @@ require(__DIR__ . "/../../partials/nav.php");
     function validate(form) {
         //TODO 1: implement JavaScript validation
         //ensure it returns false for an error and true for success
+        let email = form.email.value;
+        let password = form.password.value;
+        let notError = true;
 
+        if(email.length == 0)
+        {
+            flash("[Client] Email/Username must not be empty", "warning");
+            notError = false;
+        }
+        else
+        {
+            if(!email.includes('@'))
+            {
+                if(!validate_username(email))
+                {
+                    flash("[Client] Invalid username", "warning");
+                    notError = false;
+                }
+            }
+            else
+            {
+                if(!validate_email(email))
+                {
+                    flash("[Client] Invalid email address", "warning");
+                    notError = false;
+                }
+            }
+        }
+        
+        if(password.length == 0)
+        {
+            flash("[Client] Password must not be empty", "warning");
+            notError = false;
+        }
+        else
+        {
+            if(password.length < 8)
+            {
+                flash("[Client] Password too short", "warning");
+                notError = false;
+            }
+        }
         //TODO update clientside validation to check if it should
         //valid email or username
-        return true;
+        return notError;
     }
 </script>
 <?php
