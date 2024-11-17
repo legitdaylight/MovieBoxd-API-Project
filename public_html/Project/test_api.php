@@ -5,7 +5,7 @@ $result = [];
 $output = [];
 if (isset($_GET["title"])) {
     //function=GLOBAL_QUOTE&symbol=MSFT&datatype=json
-    $data = ["titleType"=>"movie"];
+    $data = ["exact"=>"false", "titleType"=>"movie"];
     $title = rawurlencode($_GET["title"]);
     $endpoint = "https://moviesdatabase.p.rapidapi.com/titles/search/title/$title";
     $isRapidAPI = true;
@@ -18,12 +18,31 @@ if (isset($_GET["title"])) {
         //var_dump($result);
         if(count($result) > 1 && $result['entries'] != 0)
         {
-            $output['url'] = $result['results'][0]['primaryImage']['url'];
-            $output['title'] = $result['results'][0]['titleText']['text'];
-            $day = $result['results'][0]['releaseDate']['day'];
-            $month = $result['results'][0]['releaseDate']['month'];
-            $year = $result['results'][0]['releaseDate']['year'];
-            $output['release_date'] = $year . "/" . $month . "/" . $day;
+            $entries = $result['entries'];
+
+            for($i = 0; $i < $entries; $i++)
+            {
+                if($result['results'][$i]['primaryImage'] == NULL)
+                {
+                    $output[$i]['url'] = NULL;
+                }
+                else
+                {
+                    $output[$i]['url'] = $result['results'][$i]['primaryImage']['url'];
+                }
+                $output[$i]['title'] = $result['results'][$i]['titleText']['text'];
+                if($result['results'][$i]['releaseDate'] == NULL)
+                {
+                    $output[$i]['release_date'] = "0000-00-00";
+                }
+                else
+                {
+                    $day = $result['results'][$i]['releaseDate']['day'];
+                    $month = $result['results'][$i]['releaseDate']['month'];
+                    $year = $result['results'][$i]['releaseDate']['year'];
+                    $output[$i]['release_date'] = $year . "-" . $month . "-" . $day;
+                }
+            }   
         }
         else
         {
@@ -46,12 +65,13 @@ if (isset($_GET["title"])) {
     </form>
     <div class="row ">
         <?php if (isset($output) && !empty($output)) : ?>
-            <?php foreach ($output as $attribute) : ?>
-                <pre>
-                    <?php var_export($attribute);?>
-                </pre>
-            <?php endforeach; ?>
-            <img src="<?php echo $output['url']; ?>" alt="image">
+            <?php for ($i = 0; $i < $entries; $i++) : ?>
+                <?php foreach ($output[$i] as $attribute) : ?>
+                    <pre> 
+                        <?php var_export($attribute); ?>
+                    </pre>
+                <?php endforeach; ?>
+            <?php endfor; ?>
         <?php endif; ?>
     </div>
 </div>

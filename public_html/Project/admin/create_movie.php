@@ -14,82 +14,118 @@ if (!has_role("Admin")) {
 if (isset($_POST["action"])) {
     $action = $_POST["action"];
     $title =  $_POST["title"];
+    $isValid = true;
     $quote = [];
-    if ($title) {
-        if ($action === "fetch") {
-            $result = fetch_quote($title);
-            error_log("Data from API" . var_export($result, true));
-            if ($result) {
-                $quote = $result;
-                $quote["is_api"] = 1;
-            }
-        } else if ($action === "create") {
-            foreach ($_POST as $k => $v) {
-                if (!in_array($k, ["image_url", "title", "release_date"])) {
-                    unset($_POST[$k]);
+
+    if($title) 
+    {
+        if(strlen($title) > 200)
+        {
+            flash("[PHP] Title too long (cannot exceed 200 characters)", "warning");
+            $isValid = false;
+        }
+        else
+        {
+            if ($action === "fetch") 
+            {
+                $result = fetch_quote($title);
+                error_log("Data from API" . var_export($result, true));
+                if ($result) 
+                {
+                    $quote = $result;
+                    $quote["is_api"] = 1;
                 }
-                $quote = $_POST;
-                error_log("Cleaned up POST: " . var_export($quote, true));
+            } 
+            else if ($action === "create") 
+            {
+                $date = $_POST["release_date"];
+                if(strlen($date) == 0)
+                {
+                    flash("[PHP] You must provide a date", "warning");
+                    $isValid = false;
+                }
+                else if(!preg_match('/^\d{4}\-(0?[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/', $date))
+                {
+                    flash("[PHP] Invalid date", "warning");
+                    $isValid = false;
+                }
+                else
+                {
+                    foreach ($_POST as $k => $v) 
+                    {
+                        if (!in_array($k, ["image_url", "title", "release_date"])) {
+                            unset($_POST[$k]);
+                        }
+                        $quote = $_POST;
+                        error_log("Cleaned up POST: " . var_export($quote, true));
+                    }
+                }
             }
         }
-    } else {
-        flash("You must provide a title", "warning");
+    } 
+    else 
+    {
+        flash("[PHP] You must provide a title", "warning");
+        $isValid = false;
     }
     //insert data
-    $db = getDB();
-    $query = "INSERT INTO `Movies` ";
-    $columns = [];
-    $params = [];
-    //per record
-    if(count($quote) > 1)
+    if($isValid)
     {
-        foreach ($quote as $k => $v) {
-            array_push($columns, "`$k`");
-            $params[":$k"] = $v;
+        $db = getDB();
+        $query = "INSERT INTO `Movies` ";
+        $columns = [];
+        $params = [];
+        //per record
+        if(count($quote) > 1)
+        {
+            foreach ($quote as $k => $v) {
+                array_push($columns, "`$k`");
+                $params[":$k"] = $v;
+            }
+            $query .= "(" . join(",", $columns) . ")";
+            $query .= "VALUES (" . join(",", array_keys($params)) . ")";
+            error_log("Query: " . $query);
+            error_log("Params: " . var_export($params, true));
+            try {
+                $stmt = $db->prepare($query);
+                $stmt->execute($params);
+                flash("Inserted record " . $db->lastInsertId(), "success");
+            } catch (PDOException $e) {
+                movie_check_duplicate($e->errorInfo);
+            }
         }
-        $query .= "(" . join(",", $columns) . ")";
-        $query .= "VALUES (" . join(",", array_keys($params)) . ")";
-        error_log("Query: " . $query);
-        error_log("Params: " . var_export($params, true));
-        try {
-            $stmt = $db->prepare($query);
-            $stmt->execute($params);
-            flash("Inserted record " . $db->lastInsertId(), "success");
-        } catch (PDOException $e) {
-            movie_check_duplicate($e->errorInfo);
+        else
+        {
+            flash("[PHP] Movie could not be found.", "warning");
         }
-    }
-    else
-    {
-        flash("Movie could not be found.", "warning");
     }
 }
 
 //TODO handle manual create stock
 ?>
-<div class="container-fluid">
+<div class="container-fluid bg">
     <h3>Create or Fetch Movie</h3>
     <ul class="nav nav-tabs">
         <li class="nav-item">
-            <a class="nav-link bg-success" href="#" onclick="switchTab('create')">Fetch</a>
+            <a class="nav-link bg-dark text-white " href="#" onclick="switchTab('create')">Fetch</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link bg-success" href="#" onclick="switchTab('fetch')">Create</a>
+            <a class="nav-link bg-dark text-white" href="#" onclick="switchTab('fetch')">Create</a>
         </li>
     </ul>
     <div id="fetch" class="tab-target">
-        <form method="POST">
+        <form onsubmit="return validate_fetch(this)"method="POST">
             <?php render_input(["type" => "search", "name" => "title", "placeholder" => "Movie Title", "rules" => ["required" => "required"]]); ?>
             <?php render_input(["type" => "hidden", "name" => "action", "value" => "fetch"]); ?>
             <?php render_button(["text" => "Search", "type" => "submit",]); ?>
         </form>
     </div>
     <div id="create" style="display: none;" class="tab-target">
-        <form method="POST">
+        <form onsubmit="return validate(this)" method="POST">
 
             <?php render_input(["type" => "text", "name" => "title", "placeholder" => "Movie Title", "label" => "Movie Title", "rules" => ["required" => "required"]]); ?>
             <?php render_input(["type" => "text", "name" => "image_url", "placeholder" => "Movie Image", "label" => "Movie Image"]); ?>
-            <?php render_input(["type" => "text", "name" => "release_date", "placeholder" => "Release Date", "label" => "Release Date", "rules" => ["required" => "required"]]); ?>
+            <?php render_input(["type" => "text", "name" => "release_date", "placeholder" => "Release Date (YYYY-MM-DD)", "label" => "Release Date", "rules" => ["required" => "required"]]); ?>
             
 
             <?php render_input(["type" => "hidden", "name" => "action", "value" => "create"]); ?>
@@ -98,7 +134,8 @@ if (isset($_POST["action"])) {
     </div>
 </div>
 <script>
-    function switchTab(tab) {
+    function switchTab(tab) 
+    {
         let target = document.getElementById(tab);
         if (target) {
             let eles = document.getElementsByClassName("tab-target");
@@ -107,6 +144,66 @@ if (isset($_POST["action"])) {
             }
         }
     }
+
+    function validate(form)
+    {
+        let title = form.title.value;
+        let release_date = form.release_date.value;
+        const regex = /^\d{4}\-(0?[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/;
+        let isValid = true;
+
+        //check for valid title
+        if(title.length > 200)
+        {
+            flash("[JavaScript] Title too long (cannot exceed 200 characters)", "warning");
+            isValid = false;
+        }
+
+        if(title.length == 0)
+        {
+            flash("[JavaScript] You must enter a title", "warning");
+            isValid = false;
+        }
+
+        //check for valid date
+        if(release_date.length == 0)
+        {
+            flash("[JavaScript] You must enter a release date", "warning");
+            isValid = false;
+        }
+        else
+        {
+            if(!regex.test(release_date))
+            {
+                flash("[JavaScript] Invalid date. Use YYYY-MM-DD", "warning");
+                isValid = false;
+            }
+        }
+
+        return isValid; //return true to test PHP validation
+    }
+
+    function validate_fetch(form)
+    {
+        let title = form.title.value;
+        let isValid = true;
+
+        //check for valid title
+        if(title.length > 200)
+        {
+            flash("[JavaScript] Title too long (cannot exceed 200 characters)", "warning");
+            isValid = false;
+        }
+
+        if(title.length == 0)
+        {
+            flash("[JavaScript] You must enter a title", "warning");
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
 </script>
 
 <?php
