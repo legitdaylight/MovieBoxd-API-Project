@@ -18,25 +18,44 @@ if (isset($_POST["filter"]))
     {
         flash("Filter has to be between 1 and 100", "warning");
         $num = 10;
-    }
-    $query = "SELECT id, title, image_url, is_api FROM `Movies` ORDER BY created DESC LIMIT $num"; 
+    } 
 }
 else
 {
-    $query = "SELECT id, title, image_url, is_api FROM `Movies` ORDER BY created DESC LIMIT 10";  //default value
+    $num = 10;
 }
+
+$query = "SELECT id, title, image_url, is_api FROM `Movies` ORDER BY created DESC LIMIT $num";
+$params = null;
+
+if (isset($_POST["title"])) 
+{
+    if(strlen($_POST["title"]) > 200)
+    {
+        flash("[PHP] Title too long (cannot exceed 200 characters) ", "warning");
+    }
+    else
+    {
+        $search = se($_POST, "title", "", false);
+        $query = "SELECT id, title, image_url, is_api FROM `Movies` WHERE title LIKE :title ORDER BY created DESC LIMIT $num";
+        $params =  [":title" => "%$search%"];
+    }
+}
+
 
 
 $db = getDB();
 $stmt = $db->prepare($query);
 $results = [];
 try {
-    $stmt->execute();
-    $r = $stmt->fetchAll();
-    if ($r) {
+    $stmt->execute($params);
+    $r = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    if ($r) 
+    {
         $results = $r;
     }
-} catch (PDOException $e) {
+} catch (PDOException $e) 
+{
     error_log("Error fetching movies " . var_export($e, true));
     flash("Unhandled error occurred", "danger");
 }
@@ -46,6 +65,7 @@ $table = ["data" => $results, "title" => "Latest Movies", "view_url" => get_url(
 <div class="container-fluid">
     <h3>List Movies</h3>
     <form method="POST">
+        <?php render_input(["type" => "search", "name" => "title", "placeholder" => "Movie Title"]); ?>
         <?php render_input(["type" => "number", "name" => "filter", "placeholder" => "Number of Records"]); ?>
         <?php render_button(["text" => "Search", "type" => "submit"]); ?>
     </form>

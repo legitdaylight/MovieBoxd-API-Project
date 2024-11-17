@@ -20,7 +20,7 @@ function fetch_quote($title)
             }
             else
             {
-                $output['url'] = $result['results'][0]['primaryImage']['image_url'];
+                $output['image_url'] = $result['results'][0]['primaryImage']['url'];
             }
             $output['title'] = $result['results'][0]['titleText']['text'];
             $day = $result['results'][0]['releaseDate']['day'];
