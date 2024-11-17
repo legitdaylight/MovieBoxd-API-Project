@@ -14,7 +14,14 @@ function fetch_quote($title)
         $result = json_decode($result["response"], true);
         if(count($result) > 1 && $result['entries'] != 0)
         {
-            $output['image_url'] = $result['results'][0]['primaryImage']['url'];
+            if($result['results'][0]['primaryImage'] == NULL)
+            {
+                $output['image_url'] = NULL;
+            }
+            else
+            {
+                $output['url'] = $result['results'][0]['primaryImage']['image_url'];
+            }
             $output['title'] = $result['results'][0]['titleText']['text'];
             $day = $result['results'][0]['releaseDate']['day'];
             $month = $result['results'][0]['releaseDate']['month'];

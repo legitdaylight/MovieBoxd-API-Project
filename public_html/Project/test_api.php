@@ -18,7 +18,14 @@ if (isset($_GET["title"])) {
         //var_dump($result);
         if(count($result) > 1 && $result['entries'] != 0)
         {
-            $output['url'] = $result['results'][0]['primaryImage']['url'];
+            if($result['results'][0]['primaryImage'] == NULL)
+            {
+                $output['url'] = NULL;
+            }
+            else
+            {
+                $output['url'] = $result['results'][0]['primaryImage']['url'];
+            }
             $output['title'] = $result['results'][0]['titleText']['text'];
             $day = $result['results'][0]['releaseDate']['day'];
             $month = $result['results'][0]['releaseDate']['month'];
