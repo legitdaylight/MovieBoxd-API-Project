@@ -39,6 +39,7 @@ if (isset($_POST["action"])) {
             else if ($action === "create") 
             {
                 $date = $_POST["release_date"];
+                $caption = $_POST["caption"];
                 if(strlen($date) == 0)
                 {
                     flash("[PHP] You must provide a date", "warning");
@@ -49,11 +50,16 @@ if (isset($_POST["action"])) {
                     flash("[PHP] Invalid date", "warning");
                     $isValid = false;
                 }
+                else if(strlen($caption) > 500)
+                {
+                    flash("[JavaScript] Caption too long. (cannot exceed 500 characters)", "warning");
+                    $isValid = false;
+                }
                 else
                 {
                     foreach ($_POST as $k => $v) 
                     {
-                        if (!in_array($k, ["image_url", "title", "release_date"])) {
+                        if (!in_array($k, ["image_url", "title", "caption", "release_date"])) {
                             unset($_POST[$k]);
                         }
                         $quote = $_POST;
@@ -123,10 +129,10 @@ if (isset($_POST["action"])) {
     <div id="create" style="display: none;" class="tab-target">
         <form onsubmit="return validate(this)" method="POST">
 
-            <?php render_input(["type" => "text", "name" => "title", "placeholder" => "Movie Title", "label" => "Movie Title", "rules" => ["required" => "required"]]); ?>
+            <?php render_input(["type" => "text", "name" => "title", "placeholder" => "Movie Title (required)", "label" => "Movie Title", "rules" => ["required" => "required"]]); ?>
             <?php render_input(["type" => "text", "name" => "image_url", "placeholder" => "Movie Image", "label" => "Movie Image"]); ?>
-            <?php render_input(["type" => "text", "name" => "release_date", "placeholder" => "Release Date (YYYY-MM-DD)", "label" => "Release Date", "rules" => ["required" => "required"]]); ?>
-            
+            <?php render_input(["type" => "text", "name" => "caption", "placeholder" => "Movie Caption", "label" => "Movie Caption", "value"=>"No information is available for this movie"]); ?>
+            <?php render_input(["type" => "text", "name" => "release_date", "placeholder" => "Release Date (YYYY-MM-DD, required)", "label" => "Release Date", "rules" => ["required" => "required"]]); ?>
 
             <?php render_input(["type" => "hidden", "name" => "action", "value" => "create"]); ?>
             <?php render_button(["text" => "Search", "type" => "submit", "text" => "Create"]); ?>
@@ -149,6 +155,7 @@ if (isset($_POST["action"])) {
     {
         let title = form.title.value;
         let release_date = form.release_date.value;
+        let caption = form.caption.value;
         const regex = /^\d{4}\-(0?[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/;
         let isValid = true;
 
@@ -178,6 +185,16 @@ if (isset($_POST["action"])) {
                 flash("[JavaScript] Invalid date. Use YYYY-MM-DD", "warning");
                 isValid = false;
             }
+        }
+
+        if(caption.length > 500)
+        {
+            flash("[JavaScript] Caption too long. (cannot exceed 500 characters)", "warning");
+            isValid = false;
+        }
+        else if(caption.length == 0)
+        {
+            form.caption.value = "No information is available for this movie."
         }
 
         return isValid; //return true to test PHP validation
