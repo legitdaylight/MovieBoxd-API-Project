@@ -17,16 +17,25 @@ function fetch_quote($title)
             if($result['results'][0]['primaryImage'] == NULL)
             {
                 $output['image_url'] = NULL;
+                $output['caption'] = "No information is currently available.";
             }
             else
             {
                 $output['image_url'] = $result['results'][0]['primaryImage']['url'];
+                $output['caption'] = $result['results'][0]['primaryImage']['caption']['plainText'];
             }
             $output['title'] = $result['results'][0]['titleText']['text'];
-            $day = $result['results'][0]['releaseDate']['day'];
-            $month = $result['results'][0]['releaseDate']['month'];
-            $year = $result['results'][0]['releaseDate']['year'];
-            $output['release_date'] = $year . "-" . $month . "-" . $day;
+            if($result['results'][0]['releaseDate'] == NULL)
+            {
+                $output['release_date'] = '0001-01-01';
+            }
+            else
+            {
+                $day = $result['results'][0]['releaseDate']['day'];
+                $month = $result['results'][0]['releaseDate']['month'];
+                $year = $result['results'][0]['releaseDate']['year'];
+                $output['release_date'] = $year . "-" . $month . "-" . $day;
+            }
         }
     } else {
         $result = [];

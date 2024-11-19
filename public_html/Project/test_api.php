@@ -25,10 +25,12 @@ if (isset($_GET["title"])) {
                 if($result['results'][$i]['primaryImage'] == NULL)
                 {
                     $output[$i]['url'] = NULL;
+                    $output[$i]['caption'] = "No information is currently available.";
                 }
                 else
                 {
                     $output[$i]['url'] = $result['results'][$i]['primaryImage']['url'];
+                    $output[$i]['caption'] = $result['results'][$i]['primaryImage']['caption']['plainText'];
                 }
                 $output[$i]['title'] = $result['results'][$i]['titleText']['text'];
                 if($result['results'][$i]['releaseDate'] == NULL)
@@ -42,7 +44,7 @@ if (isset($_GET["title"])) {
                     $year = $result['results'][$i]['releaseDate']['year'];
                     $output[$i]['release_date'] = $year . "-" . $month . "-" . $day;
                 }
-            }   
+            }
         }
         else
         {
@@ -64,6 +66,7 @@ if (isset($_GET["title"])) {
         </div>
     </form>
     <div class="row ">
+        
         <?php if (isset($output) && !empty($output)) : ?>
             <?php for ($i = 0; $i < $entries; $i++) : ?>
                 <?php foreach ($output[$i] as $attribute) : ?>

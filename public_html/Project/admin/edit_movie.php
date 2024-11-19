@@ -13,7 +13,7 @@ $id = se($_GET, "id", -1, false);
 //TODO handle stock fetch
 if (isset($_POST["title"])) {
     foreach ($_POST as $k => $v) {
-        if (!in_array($k, ["title", "image_url", "release_data"])) 
+        if (!in_array($k, ["title", "image_url", "caption", "release_date"])) 
         {
             unset($_POST[$k]);
         }
@@ -31,7 +31,7 @@ if (isset($_POST["title"])) {
     {
         if($k == "title")
         {
-            if(strlen($k) > 200)
+            if(strlen($v) > 200)
             {
                 flash("[PHP] Title too long (cannot exceed 200 characters)", "warning");
                 $isValid = false;
@@ -40,16 +40,16 @@ if (isset($_POST["title"])) {
 
         if($k == "release_date")
         {
-            if(strlen($date) == 0)
-                {
-                    flash("[PHP] You must provide a date", "warning");
-                    $isValid = false;
-                }
-                else if(!preg_match('/^\d{4}\-(0?[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/', $date))
-                {
-                    flash("[PHP] Invalid date", "warning");
-                    $isValid = false;
-                }
+            if(strlen($v) == 0)
+            {
+                flash("[PHP] You must provide a date", "warning");
+                $isValid = false;
+            }
+            else if(!preg_match('/^\d{4}\-(0?[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/', $v))
+            {
+                flash("[PHP] Invalid date", "warning");
+                $isValid = false;
+            }
         }
 
         if ($params) 
@@ -83,7 +83,7 @@ if ($id > -1)
 {
     //fetch
     $db = getDB();
-    $query = "SELECT title, image_url, release_date FROM `Movies` WHERE id = :id";
+    $query = "SELECT title, image_url, caption, release_date FROM `Movies` WHERE id = :id";
     try {
         $stmt = $db->prepare($query);
         $stmt->execute([":id" => $id]);
@@ -106,6 +106,7 @@ else
 $form = [
     ["type" => "text", "name" => "title", "placeholder" => "Movie Title", "label" => "Movie Title", "rules" => ["required" => "required"]],
     ["type" => "text", "name" => "image_url", "placeholder" => "Image URL", "label" => "Image URL"],
+    ["type" => "text", "name" => "caption", "placeholder" => "Movie Caption", "label" => "Movie Caption"],
     ["type" => "text", "name" => "release_date", "placeholder" => "Release Date (YYYY-MM-DD)", "label" => "Release Date", "rules" => ["required" => "required"]],
     
 
@@ -136,6 +137,7 @@ foreach ($form as $k => $v) {
     {
         let title = form.title.value;
         let release_date = form.release_date.value;
+        let caption = form.caption.value;
         const regex = /^\d{4}\-(0?[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/;
         let isValid = true;
 
@@ -165,6 +167,16 @@ foreach ($form as $k => $v) {
                 flash("[JavaScript] Invalid date. Use YYYY-MM-DD", "warning");
                 isValid = false;
             }
+        }
+
+        if(caption.length > 500)
+        {
+            flash("[JavaScript] Caption too long. (cannot exceed 500 characters)", "warning");
+            isValid = false;
+        }
+        else if(caption.length == 0)
+        {
+            form.caption.value = "No information is available for this movie.";
         }
 
         return isValid;
