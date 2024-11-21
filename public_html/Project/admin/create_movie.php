@@ -82,7 +82,7 @@ if (isset($_POST["action"])) {
         $columns = [];
         $params = [];*/
         //per record
-        if(count($movies) > 1)
+        if(count($movies) > 0)
         {
             if($action == "fetch")
             {
