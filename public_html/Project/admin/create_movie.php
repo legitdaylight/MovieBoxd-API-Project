@@ -17,6 +17,7 @@ if (isset($_POST["action"])) {
     $isValid = true;
     $movies = [];
 
+    //jd755 11/21/24
     if($title) 
     {
         if(strlen($title) > 200)
@@ -87,14 +88,14 @@ if (isset($_POST["action"])) {
             if($action == "fetch")
             {
                 insert("Movies", $movies, ["debug" => true, "update_duplicate" => true]);
-                flash("Inserted record " . $db->lastInsertId(), "success");
+                flash("Sucessfully fetched movie(s)!", "success");
             }
             else
             {
                 try
                 {
                     insert("Movies", $movies, ["debug" => true]);
-                    flash("Inserted record " . $db->lastInsertId(), "success");
+                    flash("Successfully created movie!", "success");
                 }
                 catch(PDOException $e)
                 {

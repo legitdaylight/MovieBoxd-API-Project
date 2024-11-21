@@ -70,7 +70,7 @@ if (isset($_POST["title"])) {
         try {
             $stmt = $db->prepare($query);
             $stmt->execute($params);
-            flash("Updated record ", "success");
+            flash("Sucessfully updated movie! ", "success");
         } catch (PDOException $e) {
             movie_check_duplicate($e->errorInfo);
         }
@@ -92,7 +92,7 @@ if ($id > -1)
         }
     } catch (PDOException $e) {
         error_log("Error fetching record: " . var_export($e, true));
-        flash("Error fetching record", "danger");
+        flash("Error fetching movie", "danger");
     }
 } 
 else 

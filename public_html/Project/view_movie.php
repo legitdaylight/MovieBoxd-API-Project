@@ -20,7 +20,7 @@ require(__DIR__ . "/../../partials/nav.php");
                 $movie = $r;
             }
         } catch (PDOException $e) {
-            error_log("Error fetching record: " . var_export($e, true));
+            error_log("Error fetching movie: " . var_export($e, true));
             flash("Error fetching record", "danger");
         }
     } 

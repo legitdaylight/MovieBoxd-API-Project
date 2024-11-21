@@ -23,7 +23,7 @@ if ($id > -1)
     {
         flash("Error: Could not delete movie.", "danger");
     }*/
-    flash("Sucessfully deleted movie $id", "success");
+    flash("Sucessfully deleted movie!", "success");
     die(header("Location:" . get_url("admin/list_movies.php")));
 }
 else
