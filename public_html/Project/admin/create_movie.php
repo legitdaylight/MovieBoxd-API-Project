@@ -15,7 +15,7 @@ if (isset($_POST["action"])) {
     $action = $_POST["action"];
     $title =  $_POST["title"];
     $isValid = true;
-    $quote = [];
+    $movies = [];
 
     if($title) 
     {
@@ -28,12 +28,12 @@ if (isset($_POST["action"])) {
         {
             if ($action === "fetch") 
             {
-                $result = fetch_quote($title);
+                $result = fetch_movie($title);
                 error_log("Data from API" . var_export($result, true));
                 if ($result) 
                 {
-                    $quote = $result;
-                    $quote["is_api"] = 1;
+                    $movies = $result;
+                    //$movies["is_api"] = 1;
                 }
             } 
             else if ($action === "create") 
@@ -62,8 +62,8 @@ if (isset($_POST["action"])) {
                         if (!in_array($k, ["image_url", "title", "caption", "release_date"])) {
                             unset($_POST[$k]);
                         }
-                        $quote = $_POST;
-                        error_log("Cleaned up POST: " . var_export($quote, true));
+                        $movies = $_POST;
+                        error_log("Cleaned up POST: " . var_export($movies, true));
                     }
                 }
             }
@@ -77,28 +77,49 @@ if (isset($_POST["action"])) {
     //insert data
     if($isValid)
     {
-        $db = getDB();
+        /*$db = getDB();
         $query = "INSERT INTO `Movies` ";
         $columns = [];
-        $params = [];
+        $params = [];*/
         //per record
-        if(count($quote) > 1)
+        if(count($movies) > 1)
         {
-            foreach ($quote as $k => $v) {
+            if($action == "fetch")
+            {
+                insert("Movies", $movies, ["debug" => true, "update_duplicate" => true]);
+                flash("Inserted record " . $db->lastInsertId(), "success");
+            }
+            else
+            {
+                try
+                {
+                    insert("Movies", $movies, ["debug" => true]);
+                    flash("Inserted record " . $db->lastInsertId(), "success");
+                }
+                catch(PDOException $e)
+                {
+                    movie_check_duplicate($e->errorInfo);
+                }
+            }
+            /*foreach ($movies as $k => $v) {
                 array_push($columns, "`$k`");
                 $params[":$k"] = $v;
             }
             $query .= "(" . join(",", $columns) . ")";
             $query .= "VALUES (" . join(",", array_keys($params)) . ")";
             error_log("Query: " . $query);
-            error_log("Params: " . var_export($params, true));
-            try {
+            error_log("Params: " . var_export($params, true));*/
+            /*try 
+            {
                 $stmt = $db->prepare($query);
                 $stmt->execute($params);
+                insert("Movies", $movies, ["debug" => true, "update_duplicate" => true]);
                 flash("Inserted record " . $db->lastInsertId(), "success");
-            } catch (PDOException $e) {
+            } 
+            catch (PDOException $e) 
+            {
                 movie_check_duplicate($e->errorInfo);
-            }
+            }*/
         }
         else
         {
