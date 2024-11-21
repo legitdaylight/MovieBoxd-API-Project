@@ -68,6 +68,9 @@ if (isset($_GET["title"])) {
     <div class="row ">
         
         <?php if (isset($output) && !empty($output)) : ?>
+            <?php
+                var_dump($result);
+            ?>
             <?php for ($i = 0; $i < $entries; $i++) : ?>
                 <?php foreach ($output[$i] as $attribute) : ?>
                     <pre> 
