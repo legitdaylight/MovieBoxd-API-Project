@@ -72,8 +72,7 @@ if (isset($_POST["title"])) {
             $stmt->execute($params);
             flash("Updated record ", "success");
         } catch (PDOException $e) {
-            error_log("Something broke with the query" . var_export($e, true));
-            flash("An error occurred", "danger");
+            movie_check_duplicate($e->errorInfo);
         }
     }
 }

@@ -60,7 +60,7 @@ try {
     flash("Unhandled error occurred", "danger");
 }
 
-$table = ["data" => $results, "title" => "Latest Movies", "view_url" => get_url("view_movie.php"), "edit_url" => get_url("admin/edit_movie.php"), "delete_url" => get_url("admin/delete_movie.php")];
+$table = ["data" => $results, "title" => "Latest Movies", "view_url" => get_url("view_movie.php"), "edit_url" => get_url("admin/edit_movie.php"), "delete_url" => get_url("admin/delete_movie.php?origin=list_movies.php")];
 ?>
 <div class="container-fluid">
     <h3>List Movies</h3>
