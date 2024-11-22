@@ -100,13 +100,36 @@ $table = ["data" => $results, "title" => "Latest Movies", "view_url" => get_url(
 ?>
 <div class="container-fluid">
     <h3>List Movies</h3>
-    <form method="GET">
+    <form onsubmit="return validate(this)" method="GET">
         <?php render_input(["type" => "search", "name" => "title", "placeholder" => "Movie Title", "value"=>$title]); ?>
         <?php render_input(["type" => "number", "name" => "filter", "placeholder" => "Number of Records", "value"=>$num]); ?>
         <?php render_button(["text" => "Search", "type" => "submit"]); ?>
     </form>
     <?php render_table($table); ?>
 </div>
+<script>
+    function validate(form)
+    {
+        let title = form.title.value;
+        let filter = form.filter.value;
+        let isValid = true;
+
+        if(title.length > 200)
+        {
+            flash("[JavaScript] Title too long (cannot exceed 200 characters) ", "warning");
+            isValid = false;
+        }
+
+        if(filter < 0 || filter > 100)
+        {
+            flash("[JavaScript] Filter has to be between 1 and 100", "warning");
+            isValid = false;
+        }
+
+        return isValid;
+    }
+</script>
+
 
 <?php
 //note we need to go up 1 more directory
