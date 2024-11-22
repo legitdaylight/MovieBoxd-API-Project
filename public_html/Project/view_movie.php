@@ -27,7 +27,7 @@ require(__DIR__ . "/../../partials/nav.php");
     else 
     {
         flash("Invalid id passed", "danger");
-        die(header("Location:" . get_url("home.php")));
+        die(header("Location:" . get_url("admin/list_movies.php?title=&filter=")));
     }
 
     //$table = ["data"=> $movie, "title" => "Options", "edit_url" => get_url("admin/edit_movie.php"), "delete_url" => get_url("admin/delete_movie.php")];

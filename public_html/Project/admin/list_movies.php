@@ -16,7 +16,7 @@ if(!$num)
     $num = 10;
 }
 
-if($num < 0 || $num > 100)
+if($num < 1 || $num > 100)
 {
     flash("[PHP] Filter has to be between 1 and 100", "warning");
     $num = 10;
