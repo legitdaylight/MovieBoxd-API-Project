@@ -39,7 +39,7 @@ if ($id > -1)
 else
 {
     flash("Invalid id passed", "danger");
-    die(header("Location:" . get_url("admin/list_movies.php")));
+    die(header("Location:" . get_url($listURL)));
 }
 
 ?>

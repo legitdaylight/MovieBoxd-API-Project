@@ -52,6 +52,15 @@ if (isset($_POST["title"])) {
             }
         }
 
+        if($k == "caption")
+        {
+            if(strlen($v) > 500)
+            {
+                flash("[PHP] Caption too long. (cannot exceed 500 characters)", "warning");
+                $isValid = false;
+            }
+        }
+
         if ($params) 
         {
             $query .= ",";
@@ -132,6 +141,7 @@ foreach ($form as $k => $v) {
 
 </div>
 <script>
+    //jd755 11/21/24
     function validate(form)
     {
         let title = form.title.value;

@@ -53,7 +53,7 @@ if (isset($_POST["action"])) {
                 }
                 else if(strlen($caption) > 500)
                 {
-                    flash("[JavaScript] Caption too long. (cannot exceed 500 characters)", "warning");
+                    flash("[PHP] Caption too long. (cannot exceed 500 characters)", "warning");
                     $isValid = false;
                 }
                 else
