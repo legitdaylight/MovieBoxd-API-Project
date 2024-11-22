@@ -52,6 +52,15 @@ if (isset($_POST["title"])) {
             }
         }
 
+        if($k == "caption")
+        {
+            if(strlen($v) > 500)
+            {
+                flash("[PHP] Caption too long. (cannot exceed 500 characters)", "warning");
+                $isValid = false;
+            }
+        }
+
         if ($params) 
         {
             $query .= ",";
@@ -70,10 +79,9 @@ if (isset($_POST["title"])) {
         try {
             $stmt = $db->prepare($query);
             $stmt->execute($params);
-            flash("Updated record ", "success");
+            flash("Sucessfully updated movie! ", "success");
         } catch (PDOException $e) {
-            error_log("Something broke with the query" . var_export($e, true));
-            flash("An error occurred", "danger");
+            movie_check_duplicate($e->errorInfo);
         }
     }
 }
@@ -93,7 +101,7 @@ if ($id > -1)
         }
     } catch (PDOException $e) {
         error_log("Error fetching record: " . var_export($e, true));
-        flash("Error fetching record", "danger");
+        flash("Error fetching movie", "danger");
     }
 } 
 else 
@@ -133,6 +141,7 @@ foreach ($form as $k => $v) {
 
 </div>
 <script>
+    //jd755 11/21/24
     function validate(form)
     {
         let title = form.title.value;

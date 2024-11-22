@@ -17,6 +17,7 @@ if (isset($_POST["action"])) {
     $isValid = true;
     $movies = [];
 
+    //jd755 11/21/24
     if($title) 
     {
         if(strlen($title) > 200)
@@ -52,7 +53,7 @@ if (isset($_POST["action"])) {
                 }
                 else if(strlen($caption) > 500)
                 {
-                    flash("[JavaScript] Caption too long. (cannot exceed 500 characters)", "warning");
+                    flash("[PHP] Caption too long. (cannot exceed 500 characters)", "warning");
                     $isValid = false;
                 }
                 else
@@ -82,19 +83,19 @@ if (isset($_POST["action"])) {
         $columns = [];
         $params = [];*/
         //per record
-        if(count($movies) > 1)
+        if(count($movies) > 0)
         {
             if($action == "fetch")
             {
                 insert("Movies", $movies, ["debug" => true, "update_duplicate" => true]);
-                flash("Inserted record " . $db->lastInsertId(), "success");
+                flash("Sucessfully fetched movie(s)!", "success");
             }
             else
             {
                 try
                 {
                     insert("Movies", $movies, ["debug" => true]);
-                    flash("Inserted record " . $db->lastInsertId(), "success");
+                    flash("Successfully created movie!", "success");
                 }
                 catch(PDOException $e)
                 {

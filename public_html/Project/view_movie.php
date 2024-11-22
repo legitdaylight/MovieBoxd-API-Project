@@ -20,14 +20,14 @@ require(__DIR__ . "/../../partials/nav.php");
                 $movie = $r;
             }
         } catch (PDOException $e) {
-            error_log("Error fetching record: " . var_export($e, true));
+            error_log("Error fetching movie: " . var_export($e, true));
             flash("Error fetching record", "danger");
         }
     } 
     else 
     {
         flash("Invalid id passed", "danger");
-        die(header("Location:" . get_url("/home.php")));
+        die(header("Location:" . get_url("admin/list_movies.php?title=&filter=")));
     }
 
     //$table = ["data"=> $movie, "title" => "Options", "edit_url" => get_url("admin/edit_movie.php"), "delete_url" => get_url("admin/delete_movie.php")];
@@ -43,7 +43,7 @@ require(__DIR__ . "/../../partials/nav.php");
     <?php if (has_role("Admin")) : ?>
         <div class="d-flex justify-content-center">
             <a href="admin/edit_movie.php?id=<?php echo $movie['id']; ?>" class="btn btn-secondary mx-2">Edit</a>
-            <a href="admin/delete.php?id=<?php echo $movie['id']; ?>" class="btn btn-danger mx-2">Delete</a>
+            <a href="admin/delete_movie.php?id=<?php echo $movie['id']; ?>" class="btn btn-danger mx-2">Delete</a>
         </div>
     <?php endif; ?>
 </div>
