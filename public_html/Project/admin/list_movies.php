@@ -7,7 +7,44 @@ if (!has_role("Admin")) {
     die(header("Location: $BASE_PATH" . "/home.php"));
 }
 
-if (isset($_POST["filter"])) 
+$title=$_GET["title"];
+$num=$_GET["filter"];
+$params = [];
+
+if(!$num)
+{
+    $num = 10;
+}
+
+if($num < 0 || $num > 100)
+{
+    flash("[PHP] Filter has to be between 1 and 100", "warning");
+    $num = 10;
+}
+
+if(!$title)
+{
+    $query = "SELECT id, title, image_url, is_api FROM `Movies` ORDER BY created DESC LIMIT $num";
+}
+else
+{
+    if(strlen($title) > 200)
+    {
+        flash("[PHP] Title too long (cannot exceed 200 characters) ", "warning");
+        $query = "SELECT id, title, image_url, is_api FROM `Movies` ORDER BY created DESC LIMIT $num";
+    }
+    else
+    {
+        $search = se($_GET, "title", "", false);
+        $query = "SELECT id, title, image_url, is_api FROM `Movies` WHERE title LIKE :title ORDER BY created DESC LIMIT $num";
+        $params =  [":title" => "%$search%"];
+    }
+}
+
+//$query = "SELECT id, title, image_url, is_api FROM `Movies` ORDER BY created DESC LIMIT $num";
+
+
+/*if (isset($_POST["filter"])) 
 {
     $num = $_POST["filter"];
     if(empty($num))
@@ -20,16 +57,13 @@ if (isset($_POST["filter"]))
         $num = 10;
     } 
 }
-else
-{
-    $num = 10;
-}
 
 $query = "SELECT id, title, image_url, is_api FROM `Movies` ORDER BY created DESC LIMIT $num";
 $params = null;
 
 if (isset($_POST["title"])) 
 {
+    $title = $_POST["title"];
     if(strlen($_POST["title"]) > 200)
     {
         flash("[PHP] Title too long (cannot exceed 200 characters) ", "warning");
@@ -40,7 +74,7 @@ if (isset($_POST["title"]))
         $query = "SELECT id, title, image_url, is_api FROM `Movies` WHERE title LIKE :title ORDER BY created DESC LIMIT $num";
         $params =  [":title" => "%$search%"];
     }
-}
+}*/
 
 
 
@@ -60,13 +94,15 @@ try {
     flash("Unhandled error occurred", "danger");
 }
 
-$table = ["data" => $results, "title" => "Latest Movies", "view_url" => get_url("view_movie.php"), "edit_url" => get_url("admin/edit_movie.php"), "delete_url" => get_url("admin/delete_movie.php?origin=list_movies.php")];
+$filterData = ["title" => $title, "filter"=>$num];
+$deleteURL = "admin/delete_movie.php" . "?" . http_build_query($filterData);
+$table = ["data" => $results, "title" => "Latest Movies", "view_url" => get_url("view_movie.php"), "edit_url" => get_url("admin/edit_movie.php"), "delete_url" => get_url($deleteURL)];
 ?>
 <div class="container-fluid">
     <h3>List Movies</h3>
-    <form method="POST">
-        <?php render_input(["type" => "search", "name" => "title", "placeholder" => "Movie Title"]); ?>
-        <?php render_input(["type" => "number", "name" => "filter", "placeholder" => "Number of Records"]); ?>
+    <form method="GET">
+        <?php render_input(["type" => "search", "name" => "title", "placeholder" => "Movie Title", "value"=>$title]); ?>
+        <?php render_input(["type" => "number", "name" => "filter", "placeholder" => "Number of Records", "value"=>$num]); ?>
         <?php render_button(["text" => "Search", "type" => "submit"]); ?>
     </form>
     <?php render_table($table); ?>

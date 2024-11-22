@@ -74,7 +74,7 @@
                                     <a href="<?php se($_edit_url); ?>?<?php se($_primary_key_column); ?>=<?php se($row, $_primary_key_column); ?>" class="<?php se($_edit_classes); ?>"><?php se($_edit_label); ?></a>
                                 <?php endif; ?>
                                 <?php if ($_delete_url) : ?>
-                                    <a href="<?php se($_delete_url); ?>?<?php se($_primary_key_column); ?>=<?php se($row, $_primary_key_column); ?>" class="<?php se($_delete_classes); ?>"><?php se($_delete_label); ?></a>
+                                    <a href="<?php se($_delete_url); ?>&<?php se($_primary_key_column); ?>=<?php se($row, $_primary_key_column); ?>" class="<?php se($_delete_classes); ?>"><?php se($_delete_label); ?></a>
                                 <?php endif; ?>
                                 <?php if ($_post_self_form) : ?>
                                     <!-- TODO refactor -->

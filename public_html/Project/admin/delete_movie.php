@@ -8,23 +8,33 @@ if (!has_role("Admin")) {
 }
 
 $id = se($_GET, "id", -1, false);
+if(isset($_GET["title"]) && $_GET["amp;filter"])
+{
+    $listData = ["title"=>$_GET["title"], "filter"=>$_GET["amp;filter"]];
+    $listURL = "admin/list_movies.php" . "?" . http_build_query($listData);
+}
+else
+{
+    $listURL = "admin/list_movies.php?title=&filter=";
+}
+
 
 if ($id > -1)
 {
-    /*$db = getDB();
+    $db = getDB();
     $query = "DELETE FROM `Movies` WHERE id = :id";
     try 
     {
         $stmt = $db->prepare($query);
         $stmt->execute([":id" => $id]);
-        flash("Sucessfully deleted movie $id", "success");
     } 
     catch (Exception $e) 
     {
         flash("Error: Could not delete movie.", "danger");
-    }*/
+    }
+
     flash("Sucessfully deleted movie!", "success");
-    die(header("Location:" . get_url("admin/list_movies.php")));
+    die(header("Location:" . get_url($listURL)));
 }
 else
 {
