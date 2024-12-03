@@ -16,7 +16,7 @@ function flash(message = "", color = "info") {
 }
 function validate_email(email)
 {
-    console.log("Inside validate email");
+    //console.log("Inside validate email");
     emailRegEx = /^([a-z0-9_\.\+-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/;
     return (emailRegEx.test(email));
 }
