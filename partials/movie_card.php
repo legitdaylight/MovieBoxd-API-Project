@@ -33,7 +33,8 @@
             <?php endif; ?>
             <?php if (is_logged_in() && isset($data["is_watched"])): ?>
                 <div class="card-footer">
-                    <form method="POST" action="<?php echo get_url($watchedURL);?>">
+                    <form method="POST" action="<?php echo get_url($watchedURL);?>" class="d-flex align-items-center">
+                        <p class="mb-0">Add to Watch List: </p>
                         <input type="hidden" name="movieId" value="<?php se($data, "id"); ?>" />
                         <input type="hidden" name="toggleWatched" />
                         <input type="hidden" name="route" value="<?php se($_SERVER, "PHP_SELF");?>"/>
@@ -41,6 +42,7 @@
                             <?php render_like(["value" => $data["is_watched"]]); ?>
                         </button>
                     </form>
+                    <a href="view_movie.php?id=<?php echo $data['id'] ?>" class=" btn btn-primary">View</a>
                 </div>
             <?php endif; ?>
         </div>

@@ -2,14 +2,16 @@
 session_start();
 require(__DIR__ . "/../../../lib/functions.php");
 
+$baseURL = $_POST["route"];
+
 if(isset($_GET["title"]) && $_GET["filter"])
 {
     $listData = ["title"=>$_GET["title"], "filter"=>$_GET["filter"]];
-    $searchURL = "search_movie.php" . "?" . http_build_query($listData);
+    $searchURL = $baseURL . "?" . http_build_query($listData);
 }
 else
 {
-    $searchURL = "search_movie.php?title=&filter=";
+    $searchURL = $baseURL . "?title=&filter=";
 }
 
 if (isset($_POST["toggleWatched"])) {

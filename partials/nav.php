@@ -42,6 +42,8 @@ session_start();
                 <?php if (is_logged_in()) : ?>
                     <li class="nav-item text-white"><a class="nav-link text-white" href="<?php echo get_url('home.php'); ?>">Home</a></li>
                     <li class="nav-item text-white"><a class="nav-link text-white" href="<?php echo get_url('profile.php'); ?>">Profile</a></li>
+                    <li class="nav-item text-white"><a class="nav-link text-white" href="<?php echo get_url('movie_watchlist.php?title=&filter='); ?>">Watch List</a></li>
+                    <li class="nav-item text-white"><a class="nav-link text-white" href="<?php echo get_url('search_movie.php?title=&filter='); ?>">Movie Search</a></li>
                 <?php endif; ?>
                 <?php if (!is_logged_in()) : ?>
                     <li class="nav-item text-white"><a class="nav-link text-white" href="<?php echo get_url('login.php'); ?>">Login</a></li>

@@ -1,5 +1,4 @@
 <?php
-//note we need to go up 1 more directory
 require(__DIR__ . "/../../partials/nav.php");
 
 $title=$_GET["title"];
@@ -104,7 +103,7 @@ $ignore_columns = ["id", "is_watched"];
 $table = ["data" => $results, "title" => "Latest Movies", "ignored_columns"=>$ignore_columns, "view_url" => get_url("view_movie.php")];
 ?>
 <div class="container-fluid">
-    <h3>List Movies</h3>
+    <h3 class="text-center" >Movie Search</h3>
     <form onsubmit="return validate(this)" method="GET">
         <?php render_input(["type" => "search", "name" => "title", "placeholder" => "Movie Title", "value"=>$title]); ?>
         <?php render_input(["type" => "number", "name" => "filter", "placeholder" => "Number of Records", "value"=>$num]); ?>
