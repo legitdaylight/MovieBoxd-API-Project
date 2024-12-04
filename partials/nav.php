@@ -60,6 +60,7 @@ session_start();
                             <li><a class="dropdown-item text-black" href="<?php echo get_url('admin/assign_roles.php'); ?>">Assign Roles</a></li>
                             <li><a class="dropdown-item text-black" href="<?php echo get_url('admin/create_movie.php'); ?>">Create Movie</a></li>
                             <li><a class="dropdown-item text-black" href="<?php echo get_url('admin/list_movies.php?title=&filter='); ?>">List Movies</a></li>
+                            <li><a class="dropdown-item text-black" href="<?php echo get_url('admin/list_not_assoc.php?title=&filter='); ?>">List All Non Watch Listed Movies</a></li>
                         </ul>
                     </li>
                 <?php endif; ?>

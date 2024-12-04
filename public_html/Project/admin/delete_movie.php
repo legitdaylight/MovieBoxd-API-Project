@@ -8,6 +8,7 @@ if (!has_role("Admin")) {
 }
 
 $id = se($_GET, "id", -1, false);
+
 if(isset($_GET["title"]) && $_GET["amp;filter"])
 {
     $listData = ["title"=>$_GET["title"], "filter"=>$_GET["amp;filter"]];
@@ -17,7 +18,6 @@ else
 {
     $listURL = "admin/list_movies.php?title=&filter=";
 }
-
 
 if ($id > -1)
 {
@@ -34,12 +34,12 @@ if ($id > -1)
     }
 
     flash("Sucessfully deleted movie!", "success");
-    die(header("Location:" . get_url($listURL)));
+    die(header("Location:" . get_url($searchURL)));
 }
 else
 {
     flash("Invalid id passed", "danger");
-    die(header("Location:" . get_url($listURL)));
+    die(header("Location:" . get_url($searchURL)));
 }
 
 ?>
