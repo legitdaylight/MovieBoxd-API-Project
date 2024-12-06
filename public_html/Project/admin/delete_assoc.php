@@ -7,22 +7,22 @@ if (!has_role("Admin")) {
     die(header("Location: $BASE_PATH" . "Project/home.php"));
 }
 
-$id = se($_GET, "id", -1, false);
+$id = se($_GET, "assoc_id", -1, false);
 
-if(isset($_GET["title"]) && $_GET["amp;filter"])
+if(isset($_GET["title"]) && isset($_GET["amp;filter"]) && isset($_GET["amp;user"]))
 {
-    $listData = ["title"=>$_GET["title"], "filter"=>$_GET["amp;filter"]];
-    $listURL = "admin/list_movies.php" . "?" . http_build_query($listData);
+    $listData = ["title"=>$_GET["title"], "user"=>$_GET["amp;user"], "filter"=>$_GET["amp;filter"]];
+    $listURL = "admin/list_assoc.php" . "?" . http_build_query($listData);
 }
 else
 {
-    $listURL = "admin/list_movies.php?title=&filter=";
+    $listURL = "admin/list_assoc.php?title=&user=&filter=";
 }
 
 if ($id > -1)
 {
     /*$db = getDB();
-    $query = "DELETE FROM `Movies` WHERE id = :id";
+    $query = "DELETE FROM `UserMovies` WHERE id = :id";
     try 
     {
         $stmt = $db->prepare($query);
@@ -30,10 +30,10 @@ if ($id > -1)
     } 
     catch (Exception $e) 
     {
-        flash("Error: Could not delete movie.", "danger");
+        flash("Error: Could not delete association.", "danger");
     }*/
 
-    flash("Sucessfully deleted movie!", "success");
+    flash("Sucessfully deleted association: id: $id url: $listURL", "success");
     die(header("Location:" . get_url($listURL)));
 }
 else

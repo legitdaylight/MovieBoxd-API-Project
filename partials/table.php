@@ -16,7 +16,11 @@
     $_delete_url = se($data, "delete_url", "", false);
     $_delete_label = se($data, "delete_label", "Delete", false);
     $_delete_classes = se($data, "delete_classes", "btn btn-danger", false);
+    $_profile_url = se($data, "profile_url", "", false);
+    $_profile_classes = se($data, "profile_classes", "btn btn-info", false);
     $_primary_key_column = se($data, "primary_key", "id", false); // used for the url generation
+    $_primary_key_column_assoc = se($data, "primary_key", "assoc_id", false);
+    $_primary_key_column_profile = se($data, "primary_key", "user_id", false);
     //TODO persist query params (future lesson)
     //
     // edge case that should consider a redesign
@@ -60,8 +64,8 @@
             <?php if (is_array($_data) && count($_data) > 0) : ?>
                 <?php foreach ($_data as $row) : ?>
                     <tr>
-                        <?php foreach (array_values($row) as $v) : ?>
-                            <?php if (!in_array($v, $_ignored_columns)) : ?>
+                        <?php foreach ($row as $k => $v) : ?>
+                            <?php if (!in_array($k, $_ignored_columns)) : ?>
                                 <td><?php se($v); ?></td>
                             <?php endif; ?>
                         <?php endforeach; ?>
@@ -74,7 +78,14 @@
                                     <a href="<?php se($_edit_url); ?>?<?php se($_primary_key_column); ?>=<?php se($row, $_primary_key_column); ?>" class="<?php se($_edit_classes); ?>"><?php se($_edit_label); ?></a>
                                 <?php endif; ?>
                                 <?php if ($_delete_url) : ?>
-                                    <a href="<?php se($_delete_url); ?>&<?php se($_primary_key_column); ?>=<?php se($row, $_primary_key_column); ?>" class="<?php se($_delete_classes); ?>"><?php se($_delete_label); ?></a>
+                                    <?php if(array_key_exists($_primary_key_column_assoc, $row)): ?>
+                                        <a href="<?php se($_delete_url); ?>&<?php se($_primary_key_column_assoc); ?>=<?php se($row, $_primary_key_column_assoc); ?>" class="<?php se($_delete_classes); ?>"><?php se($_delete_label); ?></a>
+                                    <?php else: ?>
+                                        <a href="<?php se($_delete_url); ?>&<?php se($_primary_key_column); ?>=<?php se($row, $_primary_key_column); ?>" class="<?php se($_delete_classes); ?>"><?php se($_delete_label); ?></a>
+                                <?php endif; ?>
+                                <?php if($_profile_url) :?>
+                                    <a href="<?php se($_profile_url); ?>?<?php se($_primary_key_column_profile); ?>=<?php se($row, $_primary_key_column_profile); ?>" class="<?php se($_profile_classes); ?>">View User Profile</a>
+                                <?php endif ?>
                                 <?php endif; ?>
                                 <?php if ($_post_self_form) : ?>
                                     <!-- TODO refactor -->
