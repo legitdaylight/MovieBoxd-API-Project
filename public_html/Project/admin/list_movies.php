@@ -120,7 +120,7 @@ $table = ["data" => $results, "title" => "Latest Movies", "view_url" => get_url(
             isValid = false;
         }
 
-        if(filter < 0 || filter > 100)
+        if(filter < 1 || filter > 100)
         {
             flash("[JavaScript] Filter has to be between 1 and 100", "warning");
             isValid = false;
