@@ -54,7 +54,7 @@ try {
     $numMovies = 0;
     if(count($results) != 0)
     {
-        $numMovies = count($results[0]);
+        $numMovies = count($results);
     }
 } catch (PDOException $e) 
 {
