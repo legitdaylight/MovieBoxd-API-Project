@@ -24,6 +24,7 @@ session_start();
 
 
 ?>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <!-- boostrap inclusion 5.3 -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
@@ -41,6 +42,8 @@ session_start();
                 <?php if (is_logged_in()) : ?>
                     <li class="nav-item text-white"><a class="nav-link text-white" href="<?php echo get_url('home.php'); ?>">Home</a></li>
                     <li class="nav-item text-white"><a class="nav-link text-white" href="<?php echo get_url('profile.php'); ?>">Profile</a></li>
+                    <li class="nav-item text-white"><a class="nav-link text-white" href="<?php echo get_url('movie_watchlist.php?title=&filter='); ?>">Watch List</a></li>
+                    <li class="nav-item text-white"><a class="nav-link text-white" href="<?php echo get_url('search_movie.php?title=&filter='); ?>">Movie Search</a></li>
                 <?php endif; ?>
                 <?php if (!is_logged_in()) : ?>
                     <li class="nav-item text-white"><a class="nav-link text-white" href="<?php echo get_url('login.php'); ?>">Login</a></li>
@@ -55,8 +58,11 @@ session_start();
                             <li><a class="dropdown-item text-black" href="<?php echo get_url('admin/create_role.php'); ?>">Create Role</a></li>
                             <li><a class="dropdown-item text-black" href="<?php echo get_url('admin/list_roles.php'); ?>">List Roles</a></li>
                             <li><a class="dropdown-item text-black" href="<?php echo get_url('admin/assign_roles.php'); ?>">Assign Roles</a></li>
+                            <li><a class="dropdown-item text-black" href="<?php echo get_url('admin/assign_movies.php'); ?>">Assign Movies</a></li>
                             <li><a class="dropdown-item text-black" href="<?php echo get_url('admin/create_movie.php'); ?>">Create Movie</a></li>
                             <li><a class="dropdown-item text-black" href="<?php echo get_url('admin/list_movies.php?title=&filter='); ?>">List Movies</a></li>
+                            <li><a class="dropdown-item text-black" href="<?php echo get_url('admin/list_not_assoc.php?title=&filter='); ?>">List All Non Watch Listed Movies</a></li>
+                            <li><a class="dropdown-item text-black" href="<?php echo get_url('admin/list_assoc.php?title=&user=&filter='); ?>">List All Associations</a></li>
                         </ul>
                     </li>
                 <?php endif; ?>
