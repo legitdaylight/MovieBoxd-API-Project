@@ -83,7 +83,8 @@ if (isset($_POST["username"]) && isset($_POST["movie"] ))
         ON Movies.id = UserMovies.movie_id 
         WHERE UserMovies.user_id = Users.id) as movie
         FROM Users
-        WHERE username LIKE :username");
+        WHERE username LIKE :username 
+        LIMIT 25");
         try 
         {
             $stmt->execute([":username" => "%$username%"]);
@@ -97,7 +98,7 @@ if (isset($_POST["username"]) && isset($_POST["movie"] ))
         }
 
         $db = getDB();
-        $stmt = $db->prepare("SELECT id, title as `name` FROM Movies WHERE title LIKE :movie");
+        $stmt = $db->prepare("SELECT id, title as `name` FROM Movies WHERE title LIKE :movie LIMIT 25");
         try {
             $stmt->execute([":movie" => "%$movie%"]);
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
