@@ -23,6 +23,7 @@ if($num < 1 || $num > 100)
     $num = 10;
 }
 
+
 if(!$title && !$user)//both user and title are blank
 {
     $query = "SELECT UserMovies.id as assoc_id, Movies.id as id, Movies.title, Movies.is_api, Users.username, Users.id as user_id,
@@ -48,9 +49,9 @@ else
         ORDER BY Movies.created
         DESC LIMIT $num";
     }
-    elseif(!empty($user) && !is_valid_username($user))
+    elseif(strlen($user) > 16)
     {
-        flash("[PHP] Invalid username", "warning");
+        flash("[PHP] Username too long (Max. 16 characters)", "warning");
         $query = "SELECT UserMovies.id as assoc_id, Movies.id as id, Movies.title, Movies.is_api, Users.username, Users.id as user_id,
         (SELECT COUNT(*) FROM UserMovies WHERE Movies.id = UserMovies.movie_id) as assocCount
         FROM Movies 
@@ -180,9 +181,10 @@ if(isset($_POST['partial_user']))
             isValid = false;
         }
 
-        if(username.length >= 1 && !validate_username(username))
+        
+        if(username.length > 16)
         {
-            flash("[JavaScript] Invalid username", "warning");
+            flash("[JavaScript] Username too long (Max. 16 characters)", "warning");
             isValid = false;
         }
 
