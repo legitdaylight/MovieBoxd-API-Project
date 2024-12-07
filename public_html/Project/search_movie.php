@@ -1,15 +1,18 @@
 <?php
-//note we need to go up 1 more directory
-require(__DIR__ . "/../../../partials/nav.php");
-
-if (!has_role("Admin")) {
-    flash("You don't have permission to view this page", "warning");
-    die(header("Location: $BASE_PATH" . "/home.php"));
-}
+require(__DIR__ . "/../../partials/nav.php");
 
 $title=$_GET["title"];
 $num=$_GET["filter"];
 $params = [];
+
+
+$assoc_check = "";
+// Append the user_id for a join if the user is logged in
+if (is_logged_in()) {
+    // return a 1 or 0 based on whether or not this guide is watched by this user
+    $assoc_check = ", (SELECT IFNULL(count(1), 0) FROM UserMovies WHERE user_id = :user_id and movie_id = Movies.id LIMIT 1) as is_watched";
+    $params[":user_id"] = get_user_id();
+}
 
 if(!$num)
 {
@@ -24,20 +27,21 @@ if($num < 1 || $num > 100)
 
 if(!$title)
 {
-    $query = "SELECT id, title, image_url, is_api FROM `Movies` ORDER BY created DESC LIMIT $num";
+    $query = "SELECT id, title, image_url, release_date $assoc_check FROM `Movies` ORDER BY created DESC LIMIT $num";
 }
 else
 {
     if(strlen($title) > 200)
     {
         flash("[PHP] Title too long (cannot exceed 200 characters) ", "warning");
-        $query = "SELECT id, title, image_url, is_api FROM `Movies` ORDER BY created DESC LIMIT $num";
+        $query = "SELECT id, title, image_url, release_date $assoc_check FROM `Movies` ORDER BY created DESC LIMIT $num";
     }
     else
     {
         $search = se($_GET, "title", "", false);
-        $query = "SELECT id, title, image_url, is_api FROM `Movies` WHERE title LIKE :title ORDER BY created DESC LIMIT $num";
-        $params =  [":title" => "%$search%"];
+        $query = "SELECT id, title, image_url, release_date $assoc_check FROM `Movies` WHERE title LIKE :title ORDER BY created DESC LIMIT $num";
+        //$params =  [":title" => "%$search%"];
+        $params[":title"] = "%$search%";
     }
 }
 
@@ -95,17 +99,26 @@ try {
 }
 
 $filterData = ["title" => $title, "filter"=>$num];
-$deleteURL = "admin/delete_movie.php" . "?" . http_build_query($filterData);
-$table = ["data" => $results, "title" => "Latest Movies", "view_url" => get_url("view_movie.php"), "edit_url" => get_url("admin/edit_movie.php"), "delete_url" => get_url($deleteURL)];
+$ignore_columns = ["id", "is_watched"];
+$table = ["data" => $results, "title" => "Latest Movies", "ignored_columns"=>$ignore_columns, "view_url" => get_url("view_movie.php")];
 ?>
 <div class="container-fluid">
-    <h3>List Movies</h3>
+    <h3 class="text-center" >Movie Search</h3>
     <form onsubmit="return validate(this)" method="GET">
         <?php render_input(["type" => "search", "name" => "title", "placeholder" => "Movie Title", "value"=>$title]); ?>
         <?php render_input(["type" => "number", "name" => "filter", "placeholder" => "Number of Records", "value"=>$num]); ?>
         <?php render_button(["text" => "Search", "type" => "submit"]); ?>
     </form>
-    <?php render_table($table); ?>
+    <div class="row">
+        <?php foreach ($results as $movie): ?>
+            <div class="col-3">
+                <?php movie_card($movie); ?>
+            </div>
+        <?php endforeach; ?>
+        <?php if (empty($results)): ?>
+            No records to show
+        <?php endif; ?>
+    </div>
 </div>
 <script>
     function validate(form)
@@ -133,5 +146,5 @@ $table = ["data" => $results, "title" => "Latest Movies", "view_url" => get_url(
 
 <?php
 //note we need to go up 1 more directory
-require_once(__DIR__ . "/../../../partials/flash.php");
+require_once(__DIR__ . "/../../partials/flash.php");
 ?>

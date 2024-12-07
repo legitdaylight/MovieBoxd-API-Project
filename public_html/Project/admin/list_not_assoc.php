@@ -24,59 +24,22 @@ if($num < 1 || $num > 100)
 
 if(!$title)
 {
-    $query = "SELECT id, title, image_url, is_api FROM `Movies` ORDER BY created DESC LIMIT $num";
+    $query = "SELECT Movies.id, Movies.title, Movies.image_url, Movies.release_date FROM Movies LEFT JOIN UserMovies ON Movies.id = UserMovies.movie_id WHERE UserMovies.movie_id IS NULL ORDER BY Movies.created DESC LIMIT $num";
 }
 else
 {
     if(strlen($title) > 200)
     {
         flash("[PHP] Title too long (cannot exceed 200 characters) ", "warning");
-        $query = "SELECT id, title, image_url, is_api FROM `Movies` ORDER BY created DESC LIMIT $num";
+        $query = "SELECT Movies.id, Movies.title, Movies.image_url, Movies.release_date FROM Movies LEFT JOIN UserMovies ON Movies.id = UserMovies.movie_id WHERE UserMovies.movie_id IS NULL ORDER BY Movies.created DESC LIMIT $num";
     }
     else
     {
         $search = se($_GET, "title", "", false);
-        $query = "SELECT id, title, image_url, is_api FROM `Movies` WHERE title LIKE :title ORDER BY created DESC LIMIT $num";
+        $query = "SELECT Movies.id, Movies.title, Movies.image_url, Movies.release_date FROM Movies LEFT JOIN UserMovies ON Movies.id = UserMovies.movie_id WHERE UserMovies.movie_id IS NULL AND Movies.title LIKE :title ORDER BY Movies.created DESC LIMIT $num";
         $params =  [":title" => "%$search%"];
     }
 }
-
-//$query = "SELECT id, title, image_url, is_api FROM `Movies` ORDER BY created DESC LIMIT $num";
-
-
-/*if (isset($_POST["filter"])) 
-{
-    $num = $_POST["filter"];
-    if(empty($num))
-    {
-        $num = 10; // default value
-    }
-    else if ($num > 101 || $num < 1)
-    {
-        flash("Filter has to be between 1 and 100", "warning");
-        $num = 10;
-    } 
-}
-
-$query = "SELECT id, title, image_url, is_api FROM `Movies` ORDER BY created DESC LIMIT $num";
-$params = null;
-
-if (isset($_POST["title"])) 
-{
-    $title = $_POST["title"];
-    if(strlen($_POST["title"]) > 200)
-    {
-        flash("[PHP] Title too long (cannot exceed 200 characters) ", "warning");
-    }
-    else
-    {
-        $search = se($_POST, "title", "", false);
-        $query = "SELECT id, title, image_url, is_api FROM `Movies` WHERE title LIKE :title ORDER BY created DESC LIMIT $num";
-        $params =  [":title" => "%$search%"];
-    }
-}*/
-
-
 
 $db = getDB();
 $stmt = $db->prepare($query);
@@ -88,6 +51,7 @@ try {
     {
         $results = $r;
     }
+    $numMovies = count($results);
 } catch (PDOException $e) 
 {
     error_log("Error fetching movies " . var_export($e, true));
@@ -96,10 +60,32 @@ try {
 
 $filterData = ["title" => $title, "filter"=>$num];
 $deleteURL = "admin/delete_movie.php" . "?" . http_build_query($filterData);
-$table = ["data" => $results, "title" => "Latest Movies", "view_url" => get_url("view_movie.php"), "edit_url" => get_url("admin/edit_movie.php"), "delete_url" => get_url($deleteURL)];
+$table = ["data" => $results, "title" => "Latest Movies", "view_url" => get_url("view_movie.php")];
 ?>
 <div class="container-fluid">
-    <h3>List Movies</h3>
+    <h3 class = "text-center">Movies That Have Not Been Watch Listed</h3>
+    <h4 class="text-center" >Number of Movies: 
+        <?php 
+            try {
+                $stmt = $db->prepare("SELECT COUNT(Movies.id) FROM Movies LEFT JOIN UserMovies ON Movies.id = UserMovies.movie_id WHERE UserMovies.movie_id IS NULL");
+                $stmt->execute();
+                $r = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                if ($r) 
+                {
+                    $movieNum = $r[0]["COUNT(Movies.id)"];
+                    echo $movieNum;
+                }
+            } catch (PDOException $e) {
+                flash("Error retrieving number of movies in watch list", "danger");
+                error_log("Error removing watch: " . var_export($e, true));
+            }
+        ?>
+    </h4>
+    <h5 class="text-center">
+        Movies On Page: 
+
+        <?php echo $numMovies; ?>
+    </h5>
     <form onsubmit="return validate(this)" method="GET">
         <?php render_input(["type" => "search", "name" => "title", "placeholder" => "Movie Title", "value"=>$title]); ?>
         <?php render_input(["type" => "number", "name" => "filter", "placeholder" => "Number of Records", "value"=>$num]); ?>
@@ -120,7 +106,7 @@ $table = ["data" => $results, "title" => "Latest Movies", "view_url" => get_url(
             isValid = false;
         }
 
-        if(filter < 1 || filter > 100)
+        if(filter < 0 || filter > 100)
         {
             flash("[JavaScript] Filter has to be between 1 and 100", "warning");
             isValid = false;
