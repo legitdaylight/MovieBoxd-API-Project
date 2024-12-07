@@ -21,7 +21,7 @@ else
 
 if ($id > -1)
 {
-    /*$db = getDB();
+    $db = getDB();
     $query = "DELETE FROM `UserMovies` WHERE id = :id";
     try 
     {
@@ -31,7 +31,7 @@ if ($id > -1)
     catch (Exception $e) 
     {
         flash("Error: Could not delete association.", "danger");
-    }*/
+    }
 
     flash("Sucessfully deleted association: id: $id url: $listURL", "success");
     die(header("Location:" . get_url($listURL)));
