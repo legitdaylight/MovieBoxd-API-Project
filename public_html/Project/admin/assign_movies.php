@@ -17,12 +17,12 @@ if (isset($_POST["users"]) && isset($_POST["movieList"]))
     } 
     else 
     {
-        $needsDelete = false;
-        //for sake of simplicity, this will be a tad inefficient
-        $db = getDB();
-        foreach ($user_ids as $uid) {
+        foreach ($user_ids as $uid) 
+        {
             foreach ($movie_ids as $mid) 
             {
+                $needsDelete = false;
+                $db = getDB();
                 try 
                 {
                     $stmt = $db->prepare("INSERT INTO UserMovies (user_id, movie_id) VALUES (:uid, :mid)");
@@ -35,7 +35,7 @@ if (isset($_POST["users"]) && isset($_POST["movieList"]))
                         $needsDelete = true;
                     } else {
                         flash("Error", "danger");
-                        error_log("Error adding watch: " . var_export($e, true));
+                        error_log("Error updating associations" . var_export($e, true));
                     }
                 }
 
@@ -45,13 +45,13 @@ if (isset($_POST["users"]) && isset($_POST["movieList"]))
                         $stmt = $db->prepare("DELETE FROM UserMovies WHERE movie_id = :mid AND user_id = :uid");
                         $stmt->execute([":uid" => $uid, ":mid" => $mid]);
                     } catch (PDOException $e) {
-                        flash("Error removing item from watch list", "danger");
-                        error_log("Error removing watch: " . var_export($e, true));
+                        flash("Error updating associations", "danger");
+                        error_log("Error updating associations" . var_export($e, true));
                     }
                 }
             }
         }
-        flash("Updated associations", "success");
+        flash("Updated associations ", "success");
     }
     
 }
