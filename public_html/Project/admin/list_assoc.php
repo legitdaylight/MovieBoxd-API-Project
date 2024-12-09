@@ -107,18 +107,18 @@ $table = ["data" => $results, "title" => "Latest Movies", "ignored_columns" =>$i
 if(isset($_POST['partial_user']))
 {
     $db = getDB();
-    $query = "DELETE FROM `UserMovies` WHERE user_id LIKE :user";
+    $query = "DELETE FROM UserMovies WHERE user_id IN (SELECT id FROM Users WHERE username LIKE :user)";
     $params =  [":user"=>"%$searchUsername%"];
     try 
     {
         $stmt = $db->prepare($query);
         $stmt->execute($params);
-        flash("Sucessfully deleted associations: ", "success");
+        flash("Sucessfully deleted associations: $searchUsername", "success");
         die(header("Location: " . get_url("admin/list_assoc.php?title=$title&user=$user&filter=$filter")));
     } 
     catch (Exception $e) 
     {
-        flash("Error: Could not delete association.", "danger");
+        flash("Error: Could not delete associations.", "danger");
     }
 }
 
