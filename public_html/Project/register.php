@@ -42,7 +42,7 @@ reset_session();
         {
             if(!validate_username(username))
             {
-                flash("[Client] Username must only contain 3-30 characters a-z, 0-9, _, or -", "warning");
+                flash("[Client] Username must only contain 3-16 characters a-z, 0-9, _, or -", "warning");
                 notError = false;
             }
         }
