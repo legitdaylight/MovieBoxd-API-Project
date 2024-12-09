@@ -21,7 +21,7 @@ else
 
 if ($id > -1)
 {
-    /*$db = getDB();
+    $db = getDB();
     $query = "DELETE FROM `Movies` WHERE id = :id";
     try 
     {
@@ -31,7 +31,7 @@ if ($id > -1)
     catch (Exception $e) 
     {
         flash("Error: Could not delete movie.", "danger");
-    }*/
+    }
 
     flash("Sucessfully deleted movie!", "success");
     die(header("Location:" . get_url($listURL)));
