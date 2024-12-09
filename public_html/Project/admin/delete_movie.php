@@ -22,18 +22,30 @@ else
 if ($id > -1)
 {
     $db = getDB();
-    $query = "DELETE FROM `Movies` WHERE id = :id";
+    $queryAssoc = "DELETE FROM UserMovies WHERE movie_id = :id";
     try 
     {
-        $stmt = $db->prepare($query);
+        $stmt = $db->prepare($queryAssoc);
         $stmt->execute([":id" => $id]);
     } 
     catch (Exception $e) 
     {
-        flash("Error: Could not delete movie.", "danger");
+        flash("Error: Could not delete association: Movieid: $id", "danger");
     }
 
-    flash("Sucessfully deleted movie!", "success");
+    $db = getDB();
+    $queryMovie = "DELETE FROM Movies WHERE id = :id";
+    try 
+    {
+        $stmt = $db->prepare($queryMovie);
+        $stmt->execute([":id" => $id]);
+        flash("Sucessfully deleted movie.", "success");
+    } 
+    catch (Exception $e) 
+    {
+        flash("Error: Could not delete association: Movieid: $id", "danger");
+    }
+
     die(header("Location:" . get_url($listURL)));
 }
 else

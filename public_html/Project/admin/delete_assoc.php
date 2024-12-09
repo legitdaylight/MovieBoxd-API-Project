@@ -27,18 +27,17 @@ if ($id > -1)
     {
         $stmt = $db->prepare($query);
         $stmt->execute([":id" => $id]);
+        flash("Sucessfully deleted association.", "success");
     } 
     catch (Exception $e) 
     {
         flash("Error: Could not delete association.", "danger");
     }
-
-    flash("Sucessfully deleted association: id: $id url: $listURL", "success");
     die(header("Location:" . get_url($listURL)));
 }
 else
 {
-    flash("Invalid id passed", "danger");
+    flash("Invalid id passed $id", "danger");
     die(header("Location:" . get_url($listURL)));
 }
 
