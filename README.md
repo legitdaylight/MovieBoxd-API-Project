@@ -1,6 +1,5 @@
-# New Jersey Institute of Technology IT202 - Internet Applications Project #
+# MovieBoxd #
 
-This is the website I created for the aformentioned IT202 course at NJIT.
 The goal of the project was to learn the fundementals of web development and API usage.
 This was my first attempt at web development, so the website is admittedly quite clunkly and rough around the edges.
 However, I gained invaluable experience using HTML, CSS, Javascript, PHP, SQL and working with APIs.
