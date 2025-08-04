@@ -8,7 +8,7 @@ The idea of this website was a basic clone of the website Letterboxd (which I 'c
 Users have the ability to view a list of movies and save the ones they like to their watchlist. 
 Admins have the ability to pull movies from the movie API and add it to the list that normal users can access.
 
-I encourage you to have a look for yourself: https://it202-jd755-prod-028c8689138c.herokuapp.com/Project/login.php
+I encourage you to have a look for [yourself](https://it202-jd755-prod-028c8689138c.herokuapp.com/Project/login.php)!
 
 ## Features: ##
 ### Edit profile: ###
